@@ -63,13 +63,6 @@
         }
     }
 
-    function updateBoardValidity() {
-        const validityElement = document.getElementById('validity');
-        const boardIsValid = isValidBoard();
-        validityElement.innerText = boardIsValid ? 'Valid Board' : 'Invalid Board';
-        validityElement.style.color = boardIsValid ? 'green' : 'red';
-    }
-
     function initLetters() {    
         var letters = document.getElementsByClassName('letter');
         for(let letter of letters) {
@@ -82,7 +75,7 @@
     function randomIntFrom0To5() {
         return Math.floor(Math.random() * 6);
     }
-    function isValidBoard() {
+    function updateBoardValidity() {
         const tilesConnected = [];
         const tilesToProcess = ['0'];
 
@@ -110,8 +103,23 @@
                 } 
             }
         }
-
-        return tilesConnected.length === document.getElementsByClassName('letter').length;
+        
+        const boardIsValid = tilesConnected.length === document.getElementsByClassName('letter').length;
+        const validityElement = document.getElementById('validity');
+        
+        if (boardIsValid) {
+            validityElement.innerText = 'Valid Board';
+            validityElement.style.color = 'green';
+        } else {
+            const invalidIndices = [];
+            for (let i = 0; i < 12; i++) {
+                if (tilesConnected.indexOf(i.toString()) === -1) {
+                    invalidIndices.push(i);
+                }
+            }
+            validityElement.innerText = 'Invalid Letters: ' + invalidIndices.map(index => document.getElementById(index).innerText);
+            validityElement.style.color = 'red';
+        }
     }
 
     function getNeighbor(x, y) {
