@@ -76,8 +76,35 @@
         return Math.floor(Math.random() * 6);
     }
     function updateBoardValidity() {
+        let maxTilesConnected = [];
+        for (let i = 0; i < document.getElementsByClassName('letter').length; i++) {
+            const tilesConnectedToIndex = checkForTilesConnectedToIndex(i);
+            if (tilesConnectedToIndex.length > maxTilesConnected.length) {
+                maxTilesConnected = tilesConnectedToIndex;
+            }
+        }
+        
+        const boardIsValid = maxTilesConnected.length === document.getElementsByClassName('letter').length;
+        const validityElement = document.getElementById('validity');
+        
+        if (boardIsValid) {
+            validityElement.innerText = 'All letters in use.';
+            validityElement.style.color = 'green';
+        } else {
+            const invalidIndices = [];
+            for (let i = 0; i < 12; i++) {
+                if (maxTilesConnected.indexOf(i.toString()) === -1) {
+                    invalidIndices.push(i);
+                }
+            }
+            validityElement.innerText = 'Letter(s) not being used: ' + invalidIndices.map(index => document.getElementById(index).innerText);
+            validityElement.style.color = 'red';
+        }
+    }
+
+    function checkForTilesConnectedToIndex(index) {
         const tilesConnected = [];
-        const tilesToProcess = ['0'];
+        const tilesToProcess = [index.toString()];
 
         while (tilesToProcess.length > 0) {
             const nextTile = tilesToProcess.pop();
@@ -103,23 +130,8 @@
                 } 
             }
         }
-        
-        const boardIsValid = tilesConnected.length === document.getElementsByClassName('letter').length;
-        const validityElement = document.getElementById('validity');
-        
-        if (boardIsValid) {
-            validityElement.innerText = 'All letters in use.';
-            validityElement.style.color = 'green';
-        } else {
-            const invalidIndices = [];
-            for (let i = 0; i < 12; i++) {
-                if (tilesConnected.indexOf(i.toString()) === -1) {
-                    invalidIndices.push(i);
-                }
-            }
-            validityElement.innerText = 'Letter(s) not being used: ' + invalidIndices.map(index => document.getElementById(index).innerText);
-            validityElement.style.color = 'red';
-        }
+
+        return tilesConnected;
     }
 
     function getNeighbor(x, y) {
