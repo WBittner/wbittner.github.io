@@ -22,8 +22,7 @@
         ['D', 'B', 'J', 'C', 'C', 'T']
     ];
 
-    var xList = []; 
-    var yList = [];
+    const coords = [];
 
     initLetters();
     interact('.letter')
@@ -44,25 +43,39 @@
     })
     .on('dragmove', function (event) {
         const index = event.target.getAttribute('id');
-        xList[index] += event.dx;
-        yList[index] += event.dy;
+        coords[index].x += event.dx;
+        coords[index].y += event.dy;
 
-        event.target.style.transform = 'translate(' + xList[index] + 'px, ' + yList[index] + 'px)';
+        event.target.style.transform = 'translate(' + coords[index].x + 'px, ' + coords[index].y + 'px)';
 
+        checkForOverlappingTiles();
+
+        updateBoardValidity();
+    });
+
+    function checkForOverlappingTiles() {
+        for (let i = document.getElementsByClassName('letter').length - 1; i > -1; i--) {
+            const firstIndexOfCoords = coords.findIndex(coord => coord.x === coords[i].x && coord.y === coords[i].y);
+
+            const letterElement = document.getElementById(i);
+            firstIndexOfCoords === i ? letterElement.classList.remove('overlapping') : letterElement.classList.add('overlapping');
+        }
+    }
+
+    function updateBoardValidity() {
         const validityElement = document.getElementById('validity');
         const boardIsValid = isValidBoard();
         validityElement.innerText = boardIsValid ? 'Valid Board' : 'Invalid Board';
         validityElement.style.color = boardIsValid ? 'green' : 'red';
-    });
+    }
 
     function initLetters() {    
         var letters = document.getElementsByClassName('letter');
         for(let letter of letters) {
             const index = letter.getAttribute('id');
-            xList[index] = 0;
-            yList[index] = 75 * index;
+            coords[index] = { x: 0, y: 75 * index };
             letter.innerText = die[index][randomIntFrom0To5()];
-            letter.style.transform = 'translate(' + xList[index] + 'px, ' + yList[index] + 'px)';
+            letter.style.transform = 'translate(' + coords[index].x + 'px, ' + coords[index].y + 'px)';
         }
     }
     function randomIntFrom0To5() {
@@ -77,10 +90,10 @@
             if (tilesConnected.indexOf(nextTile) === -1) {
                 tilesConnected.push(nextTile);
 
-                const neighborTop = getNeighbor(xList[nextTile], yList[nextTile] - 75);
-                const neighborBot = getNeighbor(xList[nextTile], yList[nextTile] + 75);
-                const neighborLeft = getNeighbor(xList[nextTile] - 75, yList[nextTile]);
-                const neighborRight = getNeighbor(xList[nextTile] + 75, yList[nextTile]);
+                const neighborTop = getNeighbor(coords[nextTile].x, coords[nextTile].y - 75);
+                const neighborBot = getNeighbor(coords[nextTile].x, coords[nextTile].y + 75);
+                const neighborLeft = getNeighbor(coords[nextTile].x - 75, coords[nextTile].y);
+                const neighborRight = getNeighbor(coords[nextTile].x + 75, coords[nextTile].y);
 
                 if (neighborTop !== undefined && tilesConnected.indexOf(neighborTop) === -1 && tilesToProcess.indexOf(neighborTop) === -1) {
                     tilesToProcess.push(neighborTop);
@@ -104,7 +117,7 @@
         var letters = document.getElementsByClassName('letter');
         for(let letter of letters) {
             const index = letter.getAttribute('id');
-            if (xList[index] === x && yList[index] === y) {
+            if (coords[index].x === x && coords[index].y === y) {
                 return index;
             }
         }
@@ -112,31 +125,35 @@
 </script>
 <style>
     .letter {
-    width: 75px;
-    height: 75px;
-    border-radius: 4px;
-    background-color: cadetblue;
-    color: silver;
-    font-size: 4em;
-    touch-action: none;
-    position: absolute;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+        width: 75px;
+        height: 75px;
+        border-radius: 4px;
+        background-color: cadetblue;
+        color: silver;
+        font-size: 4em;
+        touch-action: none;
+        position: absolute;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 
-  #board {
-    display: block;
-    background-color: silver;
-    width: 900px;
-    height: 900px;
-    margin: auto;
-  }
+    .overlapping {
+        color: red;
+    }
 
-  #page {
-    text-align: center;
-    margin: auto;
-  }
+    #board {
+        display: block;
+        background-color: silver;
+        width: 900px;
+        height: 900px;
+        margin: auto;
+    }
+
+    #page {
+        text-align: center;
+        margin: auto;
+    }
 </style>
 
 <div id="page"> 
