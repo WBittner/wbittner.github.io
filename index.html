@@ -1,3 +1,93 @@
-<h1>Testing!</h1>
+<script type="module">
+    import 'https://cdn.interactjs.io/v1.9.20/auto-start/index.js'
+    import 'https://cdn.interactjs.io/v1.9.20/actions/drag/index.js'
+    import 'https://cdn.interactjs.io/v1.9.20/actions/resize/index.js'
+    import 'https://cdn.interactjs.io/v1.9.20/modifiers/index.js'
+    import 'https://cdn.interactjs.io/v1.9.20/dev-tools/index.js'
+    import interact from 'https://cdn.interactjs.io/v1.9.20/interactjs/index.js'
+    // https://interactjs.io/docs/snapping/
 
-<p>hi</p> 
+    const die = [
+        ['I', 'I', 'O', 'Y', 'N', 'N'],
+        ['R', 'R', 'D', 'L', 'G', 'G'],
+        ['B', 'L', 'M', 'M', 'L', 'Y'],
+        ['S', 'B', 'K', 'X', 'Z', 'N'],
+        ['A', 'I', 'U', 'E', 'U', 'O'],
+        ['P', 'F', 'G', 'K', 'P', 'V'],
+        ['E', 'A', 'E', 'O', 'A', 'O'],
+        ['H', 'H', 'P', 'T', 'W', 'T'],
+        ['D', 'F', 'R', 'L', 'W', 'L'],
+        ['R', 'N', 'R', 'H', 'N', 'H'],
+        ['C', 'M', 'T', 'S', 'T', 'C'],
+        ['D', 'B', 'J', 'C', 'C', 'T']
+    ];
+
+    var xList = []; 
+    var yList = [];
+
+    initLetters();
+    interact('.letter')
+    .draggable({
+        modifiers: [
+            interact.modifiers.snap({
+                targets: [
+                    interact.snappers.grid({ x: 50, y: 50 })
+                ],
+                offset: 'parent',
+                relativePoints: [ { x: 0, y: 0 } ] //snap to top left of element
+            }),
+            interact.modifiers.restrict({
+                restriction: 'parent',
+                elementRect: { top: 0, left: 0, bottom: 1, right: 1 }
+            })
+        ]
+    })
+    .on('dragmove', function (event) {
+        const index = event.target.getAttribute('index');
+        xList[index] += event.dx;
+        yList[index] += event.dy;
+
+        event.target.style.transform = 'translate(' + xList[index] + 'px, ' + yList[index] + 'px)'
+    })
+
+    function initLetters() {    
+        var letters = document.getElementsByClassName('letter');
+        for(let letter of letters) {
+            const index = letter.getAttribute('index');
+            xList[index] = 0;
+            yList[index] = 0;
+            letter.innerText = die[index][randomIntFrom0To5()];
+        }
+    }
+    function randomIntFrom0To5() {
+        return Math.floor(Math.random() * 6);
+    }
+</script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+<link rel="stylesheet" href="the.css">
+
+<div class="container text-center"> 
+    <div class="row">
+        <h1>Hello!</h1>
+    </div>
+    
+    <div class="row">
+        <div class="col-12">
+            <span id="board">
+                <span class="letter" index="0"></span>
+                <span class="letter" index="1"></span>
+                <span class="letter" index="2"></span>
+                <span class="letter" index="3"></span>
+                <span class="letter" index="4"></span>
+                <span class="letter" index="5"></span>
+                <span class="letter" index="6"></span>
+                <span class="letter" index="7"></span>
+                <span class="letter" index="8"></span>
+                <span class="letter" index="9"></span>
+                <span class="letter" index="10"></span>
+                <span class="letter" index="11"></span>
+            </span>
+        </div>
+    </div>
+    
+</div>
