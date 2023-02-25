@@ -1,3 +1,4 @@
+<script src="dict.js"></script>
 <script type="module">
     import 'https://cdn.interactjs.io/v1.9.20/auto-start/index.js'
     import 'https://cdn.interactjs.io/v1.9.20/actions/drag/index.js'
@@ -186,15 +187,13 @@
         
         const wordsElement = document.getElementById('words');
         wordsElement.replaceChildren();
-        
+
         words.forEach(word => {
-            let wordLink = document.createElement('a', );
-            wordLink.innerText = word;
-            wordLink.style = 'padding: 2px;'
-            wordLink.setAttribute('target', '_blank');
-            wordLink.setAttribute('href', 'https://scrabblewordfinder.org/dictionary/' + word);
+            let wordText = document.createElement('span');
+            wordText.innerText = word;
+            wordText.style = 'padding: 2px; ' + (dict[word] ? 'color: green;' : 'color: red;');
             
-            wordsElement.appendChild(wordLink);
+            wordsElement.appendChild(wordText);
         });
     }
 </script>
