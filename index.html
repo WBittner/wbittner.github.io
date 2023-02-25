@@ -23,7 +23,7 @@
         ['D', 'B', 'J', 'C', 'C', 'T']
     ];
 
-    const coords = [];
+    let coords = [];
 
     initLetters();
 
@@ -196,6 +196,19 @@
             wordsElement.appendChild(wordText);
         });
     }
+
+    function reset() {
+        coords = [];
+        initLetters();
+
+        checkForOverlappingTiles();
+        const validityElement = document.getElementById('validity');
+        validityElement.innerText = 'Move a piece to enable validity checker';
+        validityElement.style.color = 'black';
+        document.getElementById('words').replaceChildren();
+    }
+
+    document.getElementById('reset').addEventListener('click', reset);
 </script>
 <style>
     .letter {
@@ -231,6 +244,7 @@
 </style>
 
 <div id="page"> 
+    <button id="reset" style="margin: 5px; padding: 5px;">New Puzzle</button>
     <span id="board">
         <span class="letter" id="0"></span>
         <span class="letter" id="1"></span>
@@ -245,9 +259,7 @@
         <span class="letter" id="10"></span>
         <span class="letter" id="11"></span>
     </span>
-    <div>
-        <h2 id="validity">Move a piece to enable validity checker</h2>
-    </div>
-    <h2>Word List</h2>
-    <p id="words"></p>
+    <h2 id="validity" style="margin: 5px;">Move a piece to enable validity checker</h2>
+    <h2  style="margin: 5px;">Word List</h2>
+    <p id="words" style="margin:0;"></p>
 </div>
