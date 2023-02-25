@@ -44,8 +44,8 @@
     })
     .on('dragmove', function (event) {
         const index = event.target.getAttribute('id');
-        coords[index].x += event.dx;
-        coords[index].y += event.dy;
+        coords[index].x = Math.round(coords[index].x + event.dx);
+        coords[index].y = Math.round(coords[index].y + event.dy);
 
         event.target.style.transform = 'translate(' + coords[index].x + 'px, ' + coords[index].y + 'px)';
 
