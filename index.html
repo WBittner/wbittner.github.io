@@ -184,7 +184,18 @@
             }
         });
         
-        document.getElementById('words').innerText = words.join(' ');
+        const wordsElement = document.getElementById('words');
+        wordsElement.replaceChildren();
+        
+        words.forEach(word => {
+            let wordLink = document.createElement('a', );
+            wordLink.innerText = word;
+            wordLink.style = 'padding: 2px;'
+            wordLink.setAttribute('target', '_blank');
+            wordLink.setAttribute('href', 'https://scrabblewordfinder.org/dictionary/' + word);
+            
+            wordsElement.appendChild(wordLink);
+        });
     }
 </script>
 <style>
