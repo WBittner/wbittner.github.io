@@ -117,7 +117,7 @@
                     invalidIndices.push(i);
                 }
             }
-            validityElement.innerText = 'Invalid Letters: ' + invalidIndices.map(index => document.getElementById(index).innerText);
+            validityElement.innerText = 'Letter(s) not being used: ' + invalidIndices.map(index => document.getElementById(index).innerText);
             validityElement.style.color = 'red';
         }
     }
