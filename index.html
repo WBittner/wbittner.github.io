@@ -81,6 +81,7 @@
             const tilesConnectedToIndex = checkForTilesConnectedToIndex(i);
             if (tilesConnectedToIndex.length > maxTilesConnected.length) {
                 maxTilesConnected = tilesConnectedToIndex;
+                console.log(tilesConnectedToIndex);
             }
         }
         
@@ -104,28 +105,34 @@
 
     function checkForTilesConnectedToIndex(index) {
         const tilesConnected = [];
+        const coordsUsed = [];
         const tilesToProcess = [index.toString()];
 
         while (tilesToProcess.length > 0) {
             const nextTile = tilesToProcess.pop();
             if (tilesConnected.indexOf(nextTile) === -1) {
                 tilesConnected.push(nextTile);
+                coordsUsed.push(coords[nextTile]);
 
                 const neighborTop = getNeighbor(coords[nextTile].x, coords[nextTile].y - 75);
                 const neighborBot = getNeighbor(coords[nextTile].x, coords[nextTile].y + 75);
                 const neighborLeft = getNeighbor(coords[nextTile].x - 75, coords[nextTile].y);
                 const neighborRight = getNeighbor(coords[nextTile].x + 75, coords[nextTile].y);
 
-                if (neighborTop !== undefined && tilesConnected.indexOf(neighborTop) === -1 && tilesToProcess.indexOf(neighborTop) === -1) {
+                if (neighborTop !== undefined && tilesConnected.indexOf(neighborTop) === -1 && tilesToProcess.indexOf(neighborTop) === -1
+                                        && !coordsUsed.some(coord => coord.x === coords[neighborTop].x && coord.y === coords[neighborTop].y)) {
                     tilesToProcess.push(neighborTop);
                 } 
-                if (neighborBot !== undefined && tilesConnected.indexOf(neighborBot) === -1 && tilesToProcess.indexOf(neighborBot) === -1) {
+                if (neighborBot !== undefined && tilesConnected.indexOf(neighborBot) === -1 && tilesToProcess.indexOf(neighborBot) === -1
+                                        && !coordsUsed.some(coord => coord.x === coords[neighborBot].x && coord.y === coords[neighborBot].y)) {
                     tilesToProcess.push(neighborBot);
                 } 
-                if (neighborLeft !== undefined && tilesConnected.indexOf(neighborLeft) === -1 && tilesToProcess.indexOf(neighborLeft) === -1) {
+                if (neighborLeft !== undefined && tilesConnected.indexOf(neighborLeft) === -1 && tilesToProcess.indexOf(neighborLeft) === -1
+                                        && !coordsUsed.some(coord => coord.x === coords[neighborLeft].x && coord.y === coords[neighborLeft].y)) {
                     tilesToProcess.push(neighborLeft);
                 } 
-                if (neighborRight !== undefined && tilesConnected.indexOf(neighborRight) === -1 && tilesToProcess.indexOf(neighborRight) === -1) {
+                if (neighborRight !== undefined && tilesConnected.indexOf(neighborRight) === -1 && tilesToProcess.indexOf(neighborRight) === -1
+                                        && !coordsUsed.some(coord => coord.x === coords[neighborRight].x && coord.y === coords[neighborRight].y)) {
                     tilesToProcess.push(neighborRight);
                 } 
             }
