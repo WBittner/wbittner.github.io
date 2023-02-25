@@ -52,6 +52,8 @@
         checkForOverlappingTiles();
 
         updateBoardValidity();
+
+        checkWords();
     });
 
     function checkForOverlappingTiles() {
@@ -149,6 +151,41 @@
             }
         }
     }
+
+    function checkWords() {
+        const numLetters = document.getElementsByClassName('letter').length;
+        const lettersByCoord = {
+            x: {},
+            y: {}
+        };
+        for (let i = 0; i < numLetters; i++) {
+            let x = coords[i].x;
+            let y = coords[i].y;
+            let letter = document.getElementById(i).innerText;
+
+            Array.isArray(lettersByCoord.x[x]) ? lettersByCoord.x[x].push({y, letter}) : lettersByCoord.x[x] = [{y, letter}];
+            Array.isArray(lettersByCoord.y[y]) ? lettersByCoord.y[y].push({x, letter}) : lettersByCoord.y[y] = [{x, letter}];
+        }
+
+        const words = [];
+        Object.values(lettersByCoord.x).forEach(xCoordList => {
+            if (xCoordList.length > 1) {
+                let xWords = Array(numLetters).fill(' ');
+                xCoordList.forEach(xCoordLetter => xWords[xCoordLetter.y/75] = xCoordLetter.letter);
+                xWords.join('').split(' ').forEach(word => word.length > 1 ? words.push(word) : undefined);
+
+            }
+        });
+        Object.values(lettersByCoord.y).forEach(yCoordList => {
+            if (yCoordList.length > 1) {
+                let yWords = Array(numLetters).fill(' ');
+                yCoordList.forEach(yCoordLetter => yWords[yCoordLetter.x/75] = yCoordLetter.letter);
+                yWords.join('').split(' ').forEach(word => word.length > 1 ? words.push(word) : undefined);
+            }
+        });
+        
+        document.getElementById('words').innerText = words.join(' ');
+    }
 </script>
 <style>
     .letter {
@@ -184,8 +221,6 @@
 </style>
 
 <div id="page"> 
-    <h1>Hello!</h1>
-
     <span id="board">
         <span class="letter" id="0"></span>
         <span class="letter" id="1"></span>
@@ -204,5 +239,5 @@
         <h2 id="validity">Move a piece to enable validity checker</h2>
     </div>
     <h2>Word List</h2>
-    <p>coming sooner...</p>
+    <p id="words"></p>
 </div>
