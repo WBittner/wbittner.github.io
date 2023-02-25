@@ -47,20 +47,67 @@
         xList[index] += event.dx;
         yList[index] += event.dy;
 
-        event.target.style.transform = 'translate(' + xList[index] + 'px, ' + yList[index] + 'px)'
-    })
+        event.target.style.transform = 'translate(' + xList[index] + 'px, ' + yList[index] + 'px)';
+
+        const validityElement = document.getElementById('validity');
+        const boardIsValid = isValidBoard();
+        validityElement.innerText = boardIsValid ? 'Valid Board' : 'Invalid Board';
+        validityElement.style.color = boardIsValid ? 'green' : 'red';
+    });
 
     function initLetters() {    
         var letters = document.getElementsByClassName('letter');
         for(let letter of letters) {
             const index = letter.getAttribute('id');
             xList[index] = 0;
-            yList[index] = 0;
+            yList[index] = 75 * index;
             letter.innerText = die[index][randomIntFrom0To5()];
+            letter.style.transform = 'translate(' + xList[index] + 'px, ' + yList[index] + 'px)';
         }
     }
     function randomIntFrom0To5() {
         return Math.floor(Math.random() * 6);
+    }
+    function isValidBoard() {
+        const tilesConnected = [];
+        const tilesToProcess = ['0'];
+
+        while (tilesToProcess.length > 0) {
+            const nextTile = tilesToProcess.pop();
+            if (tilesConnected.indexOf(nextTile) === -1) {
+                tilesConnected.push(nextTile);
+
+                const neighborTop = getNeighbor(xList[nextTile], yList[nextTile] - 75);
+                const neighborBot = getNeighbor(xList[nextTile], yList[nextTile] + 75);
+                const neighborLeft = getNeighbor(xList[nextTile] - 75, yList[nextTile]);
+                const neighborRight = getNeighbor(xList[nextTile] + 75, yList[nextTile]);
+
+                if (neighborTop !== undefined && tilesConnected.indexOf(neighborTop) === -1 && tilesToProcess.indexOf(neighborTop) === -1) {
+                    tilesToProcess.push(neighborTop);
+                } 
+                if (neighborBot !== undefined && tilesConnected.indexOf(neighborBot) === -1 && tilesToProcess.indexOf(neighborBot) === -1) {
+                    tilesToProcess.push(neighborBot);
+                } 
+                if (neighborLeft !== undefined && tilesConnected.indexOf(neighborLeft) === -1 && tilesToProcess.indexOf(neighborLeft) === -1) {
+                    tilesToProcess.push(neighborLeft);
+                } 
+                if (neighborRight !== undefined && tilesConnected.indexOf(neighborRight) === -1 && tilesToProcess.indexOf(neighborRight) === -1) {
+                    tilesToProcess.push(neighborRight);
+                } 
+            }
+        }
+
+        return tilesConnected.length === document.getElementsByClassName('letter').length;
+    }
+
+    function getNeighbor(x, y) {
+        var letters = document.getElementsByClassName('letter');
+        for(let letter of letters) {
+            const index = letter.getAttribute('id');
+            if (xList[index] === x && yList[index] === y) {
+                return index;
+            }
+        }
     }
 </script>
 <style>
@@ -72,6 +119,7 @@
     color: silver;
     font-size: 4em;
     touch-action: none;
+    position: absolute;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -109,7 +157,7 @@
         <span class="letter" id="11"></span>
     </span>
     <div>
-        <h2>Validity coming soon...</h2>
+        <h2 id="validity">Validity coming soon...</h2>
     </div>
     <h2>Word List</h2>
     <p>coming sooner...</p>
