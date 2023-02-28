@@ -189,11 +189,21 @@
         wordsElement.replaceChildren();
 
         words.forEach(word => {
-            let wordText = document.createElement('span');
-            wordText.innerText = word;
-            wordText.style = 'padding: 2px; ' + (dict[word] ? 'color: green;' : 'color: red;');
-            
-            wordsElement.appendChild(wordText);
+            if (dict[word]) {
+                let wordLink = document.createElement('a');
+                wordLink.setAttribute('target', '_blank');
+                wordLink.setAttribute('href', `https://scrabblewordfinder.org/dictionary/${word}`);
+                wordLink.style = 'padding: 2px;';
+                wordLink.innerText = word;
+
+                wordsElement.appendChild(wordLink);
+            } else {
+                let wordText = document.createElement('span');
+                wordText.innerText = word;
+                wordText.style = 'padding: 2px; color: red;';
+                
+                wordsElement.appendChild(wordText);
+            }
         });
     }
 
@@ -235,6 +245,7 @@
         width: 900px;
         height: 900px;
         margin: auto;
+        user-select: none;
     }
 
     #page {
@@ -259,7 +270,7 @@
         <span class="letter" id="10"></span>
         <span class="letter" id="11"></span>
     </span>
-    <h2 id="validity" style="margin: 5px;">Move a piece to enable validity checker</h2>
+    <h2 id="validity" style="margin: 5px;"></h2>
     <h2  style="margin: 5px;">Word List</h2>
     <p id="words" style="margin:0;"></p>
 </div>
